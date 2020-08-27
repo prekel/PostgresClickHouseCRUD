@@ -1,32 +1,16 @@
+using System.Data.Common;
+
+using Npgsql;
+
 using PostgresClickHouseCRUD.Abstract;
 
 namespace PostgresClickHouseCRUD.Postgres
 {
-    public class PostgresDb : AbstractDb
+    public class PostgresDb : AbstractDb<NpgsqlConnection, NpgsqlCommand>
     {
-        public override void CreateTable()
+        public PostgresDb(string tableName, int n) : base(tableName, n)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public override void CreateBenchmark()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override void ReadBenchmark()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override void UpdateBenchmark()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override void DeleteTable()
-        {
-            throw new System.NotImplementedException();
+            
         }
     }
 }
