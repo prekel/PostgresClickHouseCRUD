@@ -7,6 +7,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\PostgresClickHouseCRUD.ClickHouse\PostgresClickHouseCRUD.ClickHouse.csproj" />
+      <ProjectReference Include="..\PostgresClickHouseCRUD.Postgres\PostgresClickHouseCRUD.Postgres.csproj" />
     </ItemGroup>
 
 </Project>
