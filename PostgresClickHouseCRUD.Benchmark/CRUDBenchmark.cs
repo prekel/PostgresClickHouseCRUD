@@ -1,12 +1,9 @@
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
 
 namespace PostgresClickHouseCRUD.Benchmark
 {
-    [SimpleJob()]
+    [SimpleJob]
     public class CRUDBenchmark
     {
-        
     }
 }
-            

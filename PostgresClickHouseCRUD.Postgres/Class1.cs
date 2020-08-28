@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections;
 
 using Npgsql;
 
@@ -28,7 +25,7 @@ namespace PostgresClickHouseCRUD.Postgres
             var conn = new NpgsqlConnection(connString);
             conn.Open();
 
-            
+
             using (var cmd = new NpgsqlCommand("INSERT INTO test (int, str) VALUES (@p, @p1)", conn))
             {
                 cmd.Parameters.AddWithValue("p", 123);

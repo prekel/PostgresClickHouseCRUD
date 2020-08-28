@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Data;
-using System.Data.Common;
-using System.Diagnostics;
 
 namespace PostgresClickHouseCRUD.Abstract
 {
@@ -21,13 +19,6 @@ namespace PostgresClickHouseCRUD.Abstract
 
         public int N { get; }
 
-        protected abstract string CreateTableQuery { get; }
-        protected string CreateOneQuery => $"INSERT INTO {TableName} VALUES (@val1, @val2)";
-        protected string ReadOneQuery => $"SELECT value FROM {TableName} WHERE key = @val1";
-        protected string UpdateOneQuery => $"UPDATE {TableName} SET value = @val1 WHERE key = @val2";
-        protected string DeleteOneQuery => $"DELETE FROM {TableName} WHERE key = @val1";
-        protected string DropTableQuery => $"DROP TABLE IF EXISTS {TableName}";
-
         public void Connect(string cstr)
         {
             Connection.ConnectionString = cstr;
@@ -36,73 +27,58 @@ namespace PostgresClickHouseCRUD.Abstract
 
         public void CreateTable()
         {
-            using var cmd = new TCommand {CommandText = CreateTableQuery, Connection = Connection};
-            var aff = cmd.ExecuteNonQuery();
-            //Debug.Assert(aff == -1);
+            using var cmd = new TCommand {CommandText = CreateTableQuery(), Connection = Connection};
+            cmd.ExecuteNonQuery();
         }
 
         public void CreateOne(int key, int value)
         {
-            using var cmd = new TCommand {CommandText = CreateOneQuery, Connection = Connection};
-            var p1 = cmd.CreateParameter();
-            p1.ParameterName = "val1";
-            p1.Value = key;
-            cmd.Parameters.Add(p1);
-            var p2 = cmd.CreateParameter();
-            p2.ParameterName = "val2";
-            p2.Value = value;
-            cmd.Parameters.Add(p2);
-            var aff = cmd.ExecuteNonQuery();
-            Debug.Assert(aff == 1);
+            using var cmd = new TCommand {CommandText = CreateOneQuery(key, value), Connection = Connection};
+            cmd.ExecuteNonQuery();
         }
 
-        public void ReadOne(int key, int expectedValue)
+        public bool ReadOne(int key, int expectedValue)
         {
-            using var cmd = new TCommand {CommandText = ReadOneQuery, Connection = Connection};
-            var p1 = cmd.CreateParameter();
-            p1.ParameterName = "val1";
-            p1.Value = key;
-            cmd.Parameters.Add(p1);
+            using var cmd = new TCommand {CommandText = ReadOneQuery(key), Connection = Connection};
             var read = (int) cmd.ExecuteScalar();
-            Debug.Assert(read == expectedValue);
+            return read == expectedValue;
         }
 
         public void UpdateOne(int key, int newValue)
         {
-            using var cmd = new TCommand {CommandText = UpdateOneQuery, Connection = Connection};
-            var p1 = cmd.CreateParameter();
-            p1.ParameterName = "val1";
-            p1.Value = newValue;
-            cmd.Parameters.Add(p1);
-            var p2 = cmd.CreateParameter();
-            p2.ParameterName = "val2";
-            p2.Value = key;
-            cmd.Parameters.Add(p2);
-            var aff = cmd.ExecuteNonQuery();
-            Debug.Assert(aff == 1);
+            using var cmd = new TCommand {CommandText = UpdateOneQuery(key, newValue), Connection = Connection};
+            cmd.ExecuteNonQuery();
         }
 
         public void DeleteOne(int key)
         {
-            using var cmd = new TCommand {CommandText = DeleteOneQuery, Connection = Connection};
-            var p1 = cmd.CreateParameter();
-            p1.ParameterName = "val1";
-            p1.Value = key;
-            cmd.Parameters.Add(p1);
-            var aff = cmd.ExecuteNonQuery();
-            Debug.Assert(aff == 1);
+            using var cmd = new TCommand {CommandText = DeleteOneQuery(key), Connection = Connection};
+            cmd.ExecuteNonQuery();
         }
 
         public void DropTable()
         {
-            using var cmd = new TCommand {CommandText = DropTableQuery, Connection = Connection};
-            var aff = cmd.ExecuteNonQuery();
-            Debug.Assert(aff == -1);
+            using var cmd = new TCommand {CommandText = DropTableQuery(), Connection = Connection};
+            cmd.ExecuteNonQuery();
         }
 
         public void Dispose()
         {
             Connection.Dispose();
         }
+
+        protected virtual string CreateTableQuery() =>
+            $"CREATE TABLE {TableName} (key integer PRIMARY KEY, value integer NOT NULL)";
+
+        protected virtual string CreateOneQuery(int key, int value) =>
+            $"INSERT INTO {TableName} VALUES ({key}, {value})";
+
+        protected virtual string ReadOneQuery(int key) => $"SELECT value FROM {TableName} WHERE key = {key}";
+
+        protected virtual string UpdateOneQuery(int key, int newValue) =>
+            $"UPDATE {TableName} SET value = {newValue} WHERE key = {key}";
+
+        protected virtual string DeleteOneQuery(int key) => $"DELETE FROM {TableName} WHERE key = {key}";
+        protected virtual string DropTableQuery() => $"DROP TABLE IF EXISTS {TableName}";
     }
 }

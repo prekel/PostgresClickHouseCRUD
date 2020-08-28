@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-using ClickHouse.Ado;
+﻿using System.Collections.Generic;
 
 using PostgresClickHouseCRUD.Abstract;
 using PostgresClickHouseCRUD.ClickHouse;

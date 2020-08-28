@@ -8,7 +8,7 @@ namespace PostgresClickHouseCRUD.Abstract
 
         public void CreateOne(int key, int value);
 
-        public void ReadOne(int key, int expectedValue);
+        public bool ReadOne(int key, int expectedValue);
 
         public void UpdateOne(int key, int newValue);
 

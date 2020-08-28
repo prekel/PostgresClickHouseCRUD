@@ -8,13 +8,14 @@ namespace PostgresClickHouseCRUD.ClickHouse
     {
         public ClickHouseDb(string tableName, int n) : base(tableName, n)
         {
-            
         }
-        protected override string CreateTableQuery =>
-            $"CREATE TABLE {TableName} (key Int32, value Int32) ENGINE = MergeTree() ORDER BY key";
 
-        protected new string UpdateOneQuery => $"ALTER TABLE {TableName} UPDATE value = @val1 WHERE key = @val2";
+        protected override string CreateTableQuery() =>
+            $"CREATE TABLE {TableName} (key Int32, value Int32) ENGINE = MergeTree() ORDER BY key PRIMARY KEY key";
 
-        protected new string DeleteOneQuery => $"ALTER TABLE {TableName} DELETE WHERE key = @val1";
+        protected override string UpdateOneQuery(int key, int newValue) =>
+            $"ALTER TABLE {TableName} UPDATE value = {newValue} WHERE key = {key}";
+
+        protected override string DeleteOneQuery(int key) => $"ALTER TABLE {TableName} DELETE WHERE key = {key}";
     }
 }
