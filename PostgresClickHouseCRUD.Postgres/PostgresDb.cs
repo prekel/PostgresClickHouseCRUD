@@ -14,6 +14,6 @@ namespace PostgresClickHouseCRUD.Postgres
             
         }
 
-        protected override string CreateTableQuery => $"CREATE TABLE {TableName} (id integer)";
+        protected override string CreateTableQuery => $"CREATE TABLE {TableName} (key integer PRIMARY KEY, value integer NOT NULL)";
     }
 }

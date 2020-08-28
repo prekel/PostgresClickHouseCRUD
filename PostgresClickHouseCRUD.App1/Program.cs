@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using ClickHouse.Ado;
 
+using PostgresClickHouseCRUD.Abstract;
 using PostgresClickHouseCRUD.ClickHouse;
 using PostgresClickHouseCRUD.Postgres;
 
@@ -11,19 +13,27 @@ namespace PostgresClickHouseCRUD.App1
     {
         private static void Main(string[] args)
         {
-            //var q1 = new Postgres.Class1();
-            //q1.Test2();
-            
-            using var q3 = new PostgresDb("test5", 1);
-            
-            q3.Connect("Host=localhost;Username=postgres;Password=qwerty;Database=postgres;Port=15432");
-            
-            q3.CreateTable();
-            q3.CreateOne();
-            q3.ReadOne();
-            q3.UpdateOne();
-            q3.DeleteOne();
-            q3.DropTable();
+            using var db1 = new PostgresDb("test10", 1);
+            using var db2 = new ClickHouseDb("test10", 1);
+
+            db1.Connect("Host=localhost;Username=postgres;Password=qwerty;Database=postgres;Port=15432");
+            db2.Connect("Host=127.0.0.1;Port=9000;User=default");
+
+            var dblist = new List<IDb>
+            {
+                db1, db2
+            };
+
+            foreach (var db in dblist)
+            {
+                db.CreateTable();
+                db.CreateOne(1, 2);
+                db.ReadOne(1, 2);
+                db.UpdateOne(1, 3);
+                db.ReadOne(1, 3);
+                db.DeleteOne(1);
+                db.DropTable();
+            }
         }
     }
 }
