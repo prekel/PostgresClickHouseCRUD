@@ -1,4 +1,5 @@
 using System.Data.Common;
+using System.Diagnostics;
 
 using Npgsql;
 
@@ -12,5 +13,7 @@ namespace PostgresClickHouseCRUD.Postgres
         {
             
         }
+
+        protected override string CreateTableQuery => $"CREATE TABLE {TableName} (id integer)";
     }
 }

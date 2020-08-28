@@ -11,6 +11,9 @@ namespace PostgresClickHouseCRUD.App1
     {
         private static void Main(string[] args)
         {
+            //var q1 = new Postgres.Class1();
+            //q1.Test2();
+            
             using var q3 = new PostgresDb("test5", 1);
             
             q3.Connect("Host=localhost;Username=postgres;Password=qwerty;Database=postgres;Port=15432");
