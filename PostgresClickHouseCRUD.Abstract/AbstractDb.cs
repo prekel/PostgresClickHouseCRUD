@@ -7,21 +7,21 @@ namespace PostgresClickHouseCRUD.Abstract
         where TConnection : IDbConnection, new()
         where TCommand : IDbCommand, new()
     {
-        public AbstractDb(string tableName = "CRUDBenchmark", int n = 100)
+        public AbstractDb(string connectionString, string tableName)
         {
             TableName = tableName;
-            N = n;
+            ConnectionString = connectionString;
         }
 
         private TConnection Connection { get; } = new TConnection();
 
         public string TableName { get; }
 
-        public int N { get; }
+        private string ConnectionString { get; }
 
-        public void Connect(string cstr)
+        public void Connect()
         {
-            Connection.ConnectionString = cstr;
+            Connection.ConnectionString = ConnectionString;
             Connection.Open();
         }
 
@@ -37,11 +37,10 @@ namespace PostgresClickHouseCRUD.Abstract
             cmd.ExecuteNonQuery();
         }
 
-        public bool ReadOne(int key, int expectedValue)
+        public void ReadOne(int key)
         {
             using var cmd = new TCommand {CommandText = ReadOneQuery(key), Connection = Connection};
-            var read = (int) cmd.ExecuteScalar();
-            return read == expectedValue;
+            cmd.ExecuteNonQuery();
         }
 
         public void UpdateOne(int key, int newValue)
@@ -56,7 +55,7 @@ namespace PostgresClickHouseCRUD.Abstract
             cmd.ExecuteNonQuery();
         }
 
-        public void DropTable()
+        public void DropTableIfExists()
         {
             using var cmd = new TCommand {CommandText = DropTableQuery(), Connection = Connection};
             cmd.ExecuteNonQuery();

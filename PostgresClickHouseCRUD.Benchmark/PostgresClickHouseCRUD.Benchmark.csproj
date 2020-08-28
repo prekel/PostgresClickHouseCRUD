@@ -11,4 +11,10 @@
       <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\PostgresClickHouseCRUD.Abstract\PostgresClickHouseCRUD.Abstract.csproj" />
+      <ProjectReference Include="..\PostgresClickHouseCRUD.ClickHouse\PostgresClickHouseCRUD.ClickHouse.csproj" />
+      <ProjectReference Include="..\PostgresClickHouseCRUD.Postgres\PostgresClickHouseCRUD.Postgres.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -6,7 +6,7 @@ namespace PostgresClickHouseCRUD.ClickHouse
 {
     public class ClickHouseDb : AbstractDb<ClickHouseConnection, ClickHouseCommand>
     {
-        public ClickHouseDb(string tableName, int n) : base(tableName, n)
+        public ClickHouseDb(string connectionString, string tableName) : base(connectionString, tableName)
         {
         }
 

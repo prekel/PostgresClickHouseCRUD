@@ -6,7 +6,7 @@ namespace PostgresClickHouseCRUD.Postgres
 {
     public class PostgresDb : AbstractDb<NpgsqlConnection, NpgsqlCommand>
     {
-        public PostgresDb(string tableName, int n) : base(tableName, n)
+        public PostgresDb(string connectionString, string tableName) : base(connectionString, tableName)
         {
         }
     }
