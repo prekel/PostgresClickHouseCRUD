@@ -40,14 +40,14 @@ namespace PostgresClickHouseCRUD.Benchmark
                 i.Connect();
             }
 
+            var r = new Random();
             var benchlist = GetBenchmarks(dblist, 50, new List<int> {100})
                 .Concat(GetBenchmarks(dblist, 10, new List<int> {1000}))
-                .Concat(GetBenchmarks(dblist, 2, new List<int> {5000}))
-                .OrderBy(o => o.Db.ToString());
-
-            var r = new Random();
-            benchlist = GetBenchmarks(dblist, 10, new List<int> {1})
+                .Concat(GetBenchmarks(dblist, 3, new List<int> {5000}))
                 .OrderBy(o => r.Next());
+
+            //benchlist = GetBenchmarks(dblist, 10, new List<int> {1})
+            //    .OrderBy(o => r.Next());
 
             var results = benchlist.Select(b => b.Run()).ToList();
 
