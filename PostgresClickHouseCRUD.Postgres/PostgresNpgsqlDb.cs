@@ -4,11 +4,12 @@ using PostgresClickHouseCRUD.Abstract;
 
 namespace PostgresClickHouseCRUD.Postgres
 {
-    public class PostgresDb : AbstractDb<NpgsqlConnection, NpgsqlCommand>
+    public class PostgresNpgsqlDb : AbstractDb<NpgsqlConnection, NpgsqlCommand>
     {
-        public PostgresDb(string connectionString, string tableName) : base(connectionString, tableName)
+        public PostgresNpgsqlDb(string connectionString, string tableName) : base(connectionString, tableName)
         {
         }
+
         protected override string CreateTableQuery() => Queries.CreateTableQuery(TableName);
 
         protected override string CreateOneQuery(int key, int value) => Queries.CreateOneQuery(TableName, key, value);

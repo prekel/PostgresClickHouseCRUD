@@ -1,4 +1,3 @@
-using ClickHouse.Client;
 using ClickHouse.Client.ADO;
 
 using PostgresClickHouseCRUD.Abstract;

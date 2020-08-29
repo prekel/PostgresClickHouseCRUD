@@ -1,10 +1,59 @@
-using BenchmarkDotNet.Running;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+
+using CsvHelper;
+
+using PostgresClickHouseCRUD.Abstract;
+using PostgresClickHouseCRUD.ClickHouse;
+using PostgresClickHouseCRUD.Postgres;
 
 namespace PostgresClickHouseCRUD.Benchmark
 {
-    public class Program
+    internal class Program
     {
-        //public static void Main(string[] args) => BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
-        public static void Main(string[] args) => BenchmarkRunner.Run(typeof(Program).Assembly);
+        private static IEnumerable<CRUDBenchmark> GetBenchmarks(IEnumerable<IDb> dbs, int launchCount,
+            IEnumerable<int> recordsCounts) =>
+            Enumerable.Range(0, launchCount)
+                .Join(dbs, i => true, db => true, (i, db) => (i, db))
+                .Join(recordsCounts, tuple => true, n => true, (tuple, n) => new {tuple.db, tuple.i, n})
+                .Select(t => new CRUDBenchmark(t.db, t.n));
+
+        private static void Main(string[] args)
+        {
+            using var npgsql =
+                new PostgresNpgsqlDb("Host=localhost;Username=postgres;Password=qwerty;Database=postgres;Port=15432",
+                    "CRUDBenchmark");
+            using var dotConnect = new PostgresDotConnectExpressDb(
+                "Host=localhost;User=postgres;Password=qwerty;Database=postgres;Port=15432", "CRUDBenchmark");
+            using var chAdo = new ClickHouseAdoDb("Host=127.0.0.1;Port=9000;User=default", "CRUDBenchmark");
+            using var chClient = new ClickHouseClientDb("Host=127.0.0.1;Port=8123;User=default", "CRUDBenchmark");
+            using var chOctonica =
+                new ClickHouseOctonicaClientDb("Host=127.0.0.1;Port=8123;User=default", "CRUDBenchmark");
+
+            var dblist = new List<IDb> {npgsql, dotConnect, chAdo, chClient, chOctonica};
+            foreach (var i in dblist)
+            {
+                i.Connect();
+            }
+
+            var benchlist = GetBenchmarks(dblist, 50, new List<int> {100})
+                .Concat(GetBenchmarks(dblist, 10, new List<int> {1000}))
+                .Concat(GetBenchmarks(dblist, 2, new List<int> {5000}))
+                .OrderBy(o => o.Db.ToString());
+
+            var r = new Random();
+            benchlist = GetBenchmarks(dblist, 10, new List<int> {1})
+                .OrderBy(o => r.Next());
+
+            var results = benchlist.Select(b => b.Run()).ToList();
+
+            using var writer = new StreamWriter($"{DateTime.Now:yyyy-MM-dd HH-mm-ss-ffff}.csv");
+            using var csv = new CsvWriter(writer, CultureInfo.GetCultureInfo("ru-ru"));
+            csv.WriteRecords((IEnumerable) results);
+        }
     }
 }

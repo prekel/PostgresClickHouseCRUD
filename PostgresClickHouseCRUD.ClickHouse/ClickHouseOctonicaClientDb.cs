@@ -1,24 +1,20 @@
-using System.IO;
-
-using Octonica.ClickHouseClient;
+using ClickHouse.Client.ADO;
 
 using PostgresClickHouseCRUD.Abstract;
-
-using ClickHouseConnection = ClickHouse.Client.ADO.ClickHouseConnection;
 
 namespace PostgresClickHouseCRUD.ClickHouse
 {
     public class ClickHouseOctonicaClientDb : IDb
     {
-        protected string TableName { get; }
-
-        protected ClickHouseConnection Connection { get; }
-
         public ClickHouseOctonicaClientDb(string connectionString, string tableName)
         {
             TableName = tableName;
             Connection = new ClickHouseConnection(connectionString);
         }
+
+        protected string TableName { get; }
+
+        protected ClickHouseConnection Connection { get; }
 
         public void Dispose()
         {

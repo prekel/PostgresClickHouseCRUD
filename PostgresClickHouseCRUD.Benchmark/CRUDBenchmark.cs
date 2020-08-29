@@ -1,99 +1,137 @@
 using System;
-using System.Collections.Generic;
-
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Engines;
+using System.Diagnostics;
+using System.Text.Json;
 
 using PostgresClickHouseCRUD.Abstract;
-using PostgresClickHouseCRUD.ClickHouse;
-using PostgresClickHouseCRUD.Postgres;
 
 namespace PostgresClickHouseCRUD.Benchmark
 {
-    [SimpleJob(RunStrategy.ColdStart, 1, 0, 1)]
     public class CRUDBenchmark
     {
-        [ParamsSource(nameof(ValuesForDb))]
-        public IDb Db;
-
-        [Params(1, 10, 100)]
-        public int N;
-
-        public IEnumerable<IDb> ValuesForDb => new List<IDb>
+        public CRUDBenchmark(IDb db, int recordCount)
         {
-            new PostgresDb("Host=localhost;Username=postgres;Password=qwerty;Database=postgres;Port=15432",
-                "CRUDBenchmark"),
-            new ClickHouseDb("Host=127.0.0.1;Port=9000;User=default", "CRUDBenchmark")
-        };
-
-        [GlobalSetup]
-        public void Connect()
-        {
-            Db.Connect();
-            Console.WriteLine("Connected");
+            Db = db;
+            RecordCount = recordCount;
         }
 
-        [Benchmark]
-        public void CreateTable()
+        public IDb Db { get; }
+
+        public int RecordCount { get; }
+
+        public RunResult Run()
         {
+            var r = new RunResult(this);
+            CreateTable();
+            r.Create = Create().TotalMilliseconds;
+            r.Read = Read().TotalMilliseconds;
+            r.Update = Update().TotalMilliseconds;
+            r.Delete = Delete().TotalMilliseconds;
+            DropTable();
+
+            Console.WriteLine($"{DateTime.Now} {JsonSerializer.Serialize(r)}");
+
+            return r;
+        }
+
+        public TimeSpan CreateTable()
+        {
+            var sw = new Stopwatch();
+            sw.Start();
             Db.DropTableIfExists();
             Db.CreateTable();
+            sw.Stop();
+
+            return sw.Elapsed;
         }
 
-        [Benchmark]
-        public void CreateBenchmark()
+        public TimeSpan Create()
         {
-            for (var i = 0; i < N; i++)
+            var sw = new Stopwatch();
+            sw.Start();
+
+            for (var i = 0; i < RecordCount; i++)
             {
                 Db.CreateOne(i, i);
             }
+
+            sw.Stop();
+
+            return sw.Elapsed;
         }
 
-        [Benchmark]
-        public void ReadBenchmark()
+
+        public TimeSpan Read()
         {
-            for (var i = 0; i < N; i++)
+            var sw = new Stopwatch();
+            sw.Start();
+            for (var i = 0; i < RecordCount; i++)
             {
                 Db.ReadOne(i);
             }
+
+            sw.Stop();
+
+            return sw.Elapsed;
         }
 
-        [Benchmark]
-        public void UpdateBenchmark()
+        public TimeSpan Update()
         {
-            for (var i = 0; i < N; i++)
+            var sw = new Stopwatch();
+            sw.Start();
+            for (var i = 0; i < RecordCount; i++)
             {
-                Db.UpdateOne(i, N - i);
+                Db.UpdateOne(i, RecordCount - i);
             }
+
+            sw.Stop();
+
+            return sw.Elapsed;
         }
 
-        [Benchmark]
-        public void DeleteBenchmark()
+        public TimeSpan Delete()
         {
-            for (var i = 0; i < N; i++)
+            var sw = new Stopwatch();
+            sw.Start();
+            for (var i = 0; i < RecordCount; i++)
             {
                 Db.DeleteOne(i);
             }
+
+            sw.Stop();
+
+            return sw.Elapsed;
         }
 
-        [Benchmark]
-        public void DropTable()
+        public TimeSpan DropTable()
         {
+            var sw = new Stopwatch();
+            sw.Start();
+
             Db.DropTableIfExists();
+
+            sw.Stop();
+
+            return sw.Elapsed;
         }
 
-        [GlobalCleanup]
-        public void Disconnect()
+        public class RunResult
         {
-            try
+            public RunResult(CRUDBenchmark bench)
             {
-                Db.Dispose();
-                Console.WriteLine("Disconnected");
+                DbmsAndDriverName = bench.Db.ToString();
+                RecordCount = bench.RecordCount;
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
+
+            public string DbmsAndDriverName { get; }
+            public int RecordCount { get; }
+
+            public double Create { get; protected internal set; }
+
+            public double Read { get; protected internal set; }
+
+            public double Update { get; protected internal set; }
+
+            public double Delete { get; protected internal set; }
         }
     }
 }

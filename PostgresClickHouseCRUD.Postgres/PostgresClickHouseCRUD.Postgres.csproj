@@ -1,11 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.1</TargetFramework>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="dotConnect.Express.for.PostgreSQL" Version="7.17.1696" />
       <PackageReference Include="Npgsql" Version="4.1.4" />
+      <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="4.7.0" />
     </ItemGroup>
 
     <ItemGroup>

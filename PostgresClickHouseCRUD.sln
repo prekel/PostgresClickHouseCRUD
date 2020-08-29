@@ -2,11 +2,11 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostgresClickHouseCRUD.ClickHouse", "PostgresClickHouseCRUD.ClickHouse\PostgresClickHouseCRUD.ClickHouse.csproj", "{ED2EF654-A2E9-4518-A4B0-0DF94187CE5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostgresClickHouseCRUD.App1", "PostgresClickHouseCRUD.App1\PostgresClickHouseCRUD.App1.csproj", "{DA4A7BEA-044E-476E-87A4-FFCD872872E6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostgresClickHouseCRUD.Postgres", "PostgresClickHouseCRUD.Postgres\PostgresClickHouseCRUD.Postgres.csproj", "{E3471445-A295-4730-9153-E8F1B63523A7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostgresClickHouseCRUD.Abstract", "PostgresClickHouseCRUD.Abstract\PostgresClickHouseCRUD.Abstract.csproj", "{6DF00B34-552E-4D2C-87AA-BA8A0689B932}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostgresClickHouseCRUD.Benchmark", "PostgresClickHouseCRUD.Benchmark\PostgresClickHouseCRUD.Benchmark.csproj", "{FF800246-95E8-4125-95B1-360599885506}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,10 +18,6 @@ Global
 		{ED2EF654-A2E9-4518-A4B0-0DF94187CE5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED2EF654-A2E9-4518-A4B0-0DF94187CE5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED2EF654-A2E9-4518-A4B0-0DF94187CE5B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA4A7BEA-044E-476E-87A4-FFCD872872E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA4A7BEA-044E-476E-87A4-FFCD872872E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA4A7BEA-044E-476E-87A4-FFCD872872E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA4A7BEA-044E-476E-87A4-FFCD872872E6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E3471445-A295-4730-9153-E8F1B63523A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E3471445-A295-4730-9153-E8F1B63523A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3471445-A295-4730-9153-E8F1B63523A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -30,5 +26,9 @@ Global
 		{6DF00B34-552E-4D2C-87AA-BA8A0689B932}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6DF00B34-552E-4D2C-87AA-BA8A0689B932}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6DF00B34-552E-4D2C-87AA-BA8A0689B932}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF800246-95E8-4125-95B1-360599885506}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF800246-95E8-4125-95B1-360599885506}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF800246-95E8-4125-95B1-360599885506}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF800246-95E8-4125-95B1-360599885506}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

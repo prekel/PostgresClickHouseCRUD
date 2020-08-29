@@ -1,20 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
         <OutputType>Exe</OutputType>
-        <LangVersion>9</LangVersion>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
+      <ProjectReference Include="..\PostgresClickHouseCRUD.ClickHouse\PostgresClickHouseCRUD.ClickHouse.csproj" />
+      <ProjectReference Include="..\PostgresClickHouseCRUD.Postgres\PostgresClickHouseCRUD.Postgres.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\PostgresClickHouseCRUD.Abstract\PostgresClickHouseCRUD.Abstract.csproj" />
-      <ProjectReference Include="..\PostgresClickHouseCRUD.ClickHouse\PostgresClickHouseCRUD.ClickHouse.csproj" />
-      <ProjectReference Include="..\PostgresClickHouseCRUD.Postgres\PostgresClickHouseCRUD.Postgres.csproj" />
+      <PackageReference Include="CsvHelper" Version="15.0.5" />
     </ItemGroup>
 
 </Project>
