@@ -60,12 +60,6 @@ namespace PostgresClickHouseCRUD.Abstract
             cmd.ExecuteNonQuery();
         }
 
-        public void Select1()
-        {
-            using var cmd = new TCommand {CommandText = "SELECT 1", Connection = Connection};
-            cmd.ExecuteNonQuery();
-        }
-
         public void Dispose()
         {
             Connection.Dispose();

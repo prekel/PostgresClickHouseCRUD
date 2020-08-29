@@ -10,4 +10,8 @@
       <ProjectReference Include="..\PostgresClickHouseCRUD.Postgres\PostgresClickHouseCRUD.Postgres.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="CsvHelper" Version="15.0.5" />
+    </ItemGroup>
+
 </Project>

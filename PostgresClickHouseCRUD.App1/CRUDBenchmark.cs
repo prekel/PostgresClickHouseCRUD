@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
+using System.Text.Json;
 
 using PostgresClickHouseCRUD.Abstract;
 
@@ -9,48 +8,33 @@ namespace PostgresClickHouseCRUD.App1
 {
     public class CRUDBenchmark
     {
-        public CRUDBenchmark(IDb db, int n)
+        public CRUDBenchmark(IDb db, int recordCount)
         {
             Db = db;
-            N = n;
+            RecordCount = recordCount;
         }
 
         public IDb Db { get; }
 
-        public int N { get; }
+        public int RecordCount { get; }
 
-        public class RunResult
+        public RunResult Run()
         {
-            public string DbName { get; }
-            public int N { get; }
-            public Dictionary<string, double> Results { get; }
-
-            public RunResult(CRUDBenchmark bench, IDictionary<string, TimeSpan> result)
+            CreateTable();
+            var r = new RunResult(this)
             {
-                DbName = bench.Db.ToString();
-                N = bench.N;
-                Results = result
-                    .Select(kv => (kv.Key, kv.Value.TotalMilliseconds))
-                    .ToDictionary(t => t.Key, t => t.TotalMilliseconds);
-            }
+                Create = Create().TotalMilliseconds,
+                Read = Read().TotalMilliseconds,
+                Update = Update().TotalMilliseconds,
+                Delete = Delete().TotalMilliseconds
+            };
+            DropTable();
+
+            Debug.WriteLine(DateTime.Now + " " + JsonSerializer.Serialize(r));
+
+            return r;
         }
 
-        public RunResult RunRunResult() => new RunResult(this, Run());
-
-        public IDictionary<string, TimeSpan> Run()
-        {
-            var d = new Dictionary<string, TimeSpan>();
-
-            d.Add("CreateTable", CreateTable());
-            d.Add("Create", Create());
-            d.Add("Read", Read());
-            d.Add("Update", Update());
-            d.Add("Delete", Delete());
-            d.Add("DropTable", DropTable());
-
-            return d;
-        }
-        
         public TimeSpan CreateTable()
         {
             var sw = new Stopwatch();
@@ -67,7 +51,7 @@ namespace PostgresClickHouseCRUD.App1
             var sw = new Stopwatch();
             sw.Start();
 
-            for (var i = 0; i < N; i++)
+            for (var i = 0; i < RecordCount; i++)
             {
                 Db.CreateOne(i, i);
             }
@@ -82,7 +66,7 @@ namespace PostgresClickHouseCRUD.App1
         {
             var sw = new Stopwatch();
             sw.Start();
-            for (var i = 0; i < N; i++)
+            for (var i = 0; i < RecordCount; i++)
             {
                 Db.ReadOne(i);
             }
@@ -96,9 +80,9 @@ namespace PostgresClickHouseCRUD.App1
         {
             var sw = new Stopwatch();
             sw.Start();
-            for (var i = 0; i < N; i++)
+            for (var i = 0; i < RecordCount; i++)
             {
-                Db.UpdateOne(i, N - i);
+                Db.UpdateOne(i, RecordCount - i);
             }
 
             sw.Stop();
@@ -110,7 +94,7 @@ namespace PostgresClickHouseCRUD.App1
         {
             var sw = new Stopwatch();
             sw.Start();
-            for (var i = 0; i < N; i++)
+            for (var i = 0; i < RecordCount; i++)
             {
                 Db.DeleteOne(i);
             }
@@ -130,6 +114,26 @@ namespace PostgresClickHouseCRUD.App1
             sw.Stop();
 
             return sw.Elapsed;
+        }
+
+        public class RunResult
+        {
+            public RunResult(CRUDBenchmark bench)
+            {
+                DbName = bench.Db.ToString();
+                RecordCount = bench.RecordCount;
+            }
+
+            public string DbName { get; }
+            public int RecordCount { get; }
+
+            public double Create { get; protected internal set; }
+
+            public double Read { get; protected internal set; }
+
+            public double Update { get; protected internal set; }
+
+            public double Delete { get; protected internal set; }
         }
     }
 }

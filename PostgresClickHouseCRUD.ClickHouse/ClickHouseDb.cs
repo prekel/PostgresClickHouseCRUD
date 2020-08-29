@@ -1,5 +1,3 @@
-using System.Data;
-
 using ClickHouse.Ado;
 
 using PostgresClickHouseCRUD.Abstract;

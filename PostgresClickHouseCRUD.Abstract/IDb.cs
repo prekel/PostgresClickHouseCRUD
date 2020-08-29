@@ -17,7 +17,5 @@ namespace PostgresClickHouseCRUD.Abstract
         public void DeleteOne(int key);
 
         public void DropTableIfExists();
-
-        public void Select1();
     }
 }

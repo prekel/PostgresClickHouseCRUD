@@ -34,9 +34,6 @@ namespace PostgresClickHouseCRUD.Benchmark
         }
 
         [Benchmark]
-        public void Select1() => Db.Select1();
-        
-        [Benchmark]
         public void CreateTable()
         {
             Db.DropTableIfExists();
