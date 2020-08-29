@@ -19,5 +19,7 @@ namespace PostgresClickHouseCRUD.ClickHouse
             $"ALTER TABLE {TableName} UPDATE value = {newValue} WHERE key = {key}";
 
         protected override string DeleteOneQuery(int key) => $"ALTER TABLE {TableName} DELETE WHERE key = {key}";
+
+        public override string ToString() => "ClickHouse";
     }
 }

@@ -9,5 +9,7 @@ namespace PostgresClickHouseCRUD.Postgres
         public PostgresDb(string connectionString, string tableName) : base(connectionString, tableName)
         {
         }
+
+        public override string ToString() => "Postgres";
     }
 }
