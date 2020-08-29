@@ -26,11 +26,17 @@ namespace PostgresClickHouseCRUD.App1
             using var db1 =
                 new PostgresDb("Host=localhost;Username=postgres;Password=qwerty;Database=postgres;Port=15432",
                     "CRUDBenchmark");
-            using var db2 = new ClickHouseDb("Host=127.0.0.1;Port=9000;User=default", "CRUDBenchmark");
+            using var db2 = new ClickHouseAdoDb("Host=127.0.0.1;Port=9000;User=default", "CRUDBenchmark");
+            using var db3 = new ClickHouseClientDb("Host=127.0.0.1;Port=9000;User=default", "CRUDBenchmark");
+            using var db4 = new ClickHouseOctonicaClientDb("Host=127.0.0.1;Port=8123;User=default", "CRUDBenchmark");
 
-            var benchlist = GetBenchmarks(new List<IDb> {db1, db2}, 50, new List<int> {100})
-                .Concat(GetBenchmarks(new List<IDb> {db1, db2}, 10, new List<int> {1000}))
-                .Concat(GetBenchmarks(new List<IDb> {db1, db2}, 2, new List<int> {5000}))
+
+            var benchlist = GetBenchmarks(new List<IDb> {db1, db2, db3}, 50, new List<int> {100})
+                .Concat(GetBenchmarks(new List<IDb> {db1, db2, db3}, 10, new List<int> {1000}))
+                .Concat(GetBenchmarks(new List<IDb> {db1, db2, db3}, 2, new List<int> {5000}))
+                .OrderBy(o => o.Db.ToString());
+
+            benchlist = GetBenchmarks(new List<IDb> {db1, db2, db3, db4}, 5, new List<int> {30})
                 .OrderBy(o => o.Db.ToString());
 
             db1.Connect();

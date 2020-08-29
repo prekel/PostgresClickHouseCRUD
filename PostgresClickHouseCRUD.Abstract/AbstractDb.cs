@@ -65,18 +65,15 @@ namespace PostgresClickHouseCRUD.Abstract
             Connection.Dispose();
         }
 
-        protected virtual string CreateTableQuery() =>
-            $"CREATE TABLE {TableName} (key integer PRIMARY KEY, value integer NOT NULL)";
+        protected abstract string CreateTableQuery();
 
-        protected virtual string CreateOneQuery(int key, int value) =>
-            $"INSERT INTO {TableName} VALUES ({key}, {value})";
+        protected abstract string CreateOneQuery(int key, int value);
 
-        protected virtual string ReadOneQuery(int key) => $"SELECT value FROM {TableName} WHERE key = {key}";
+        protected abstract string ReadOneQuery(int key);
 
-        protected virtual string UpdateOneQuery(int key, int newValue) =>
-            $"UPDATE {TableName} SET value = {newValue} WHERE key = {key}";
+        protected abstract string UpdateOneQuery(int key, int newValue);
 
-        protected virtual string DeleteOneQuery(int key) => $"DELETE FROM {TableName} WHERE key = {key}";
-        protected virtual string DropTableQuery() => $"DROP TABLE IF EXISTS {TableName}";
+        protected abstract string DeleteOneQuery(int key);
+        protected abstract string DropTableQuery();
     }
 }
