@@ -1,13 +1,12 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 
 namespace PostgresClickHouseCRUD.Abstract
 {
-    public abstract class AbstractDb<TConnection, TCommand> : IDisposable, IDb
-        where TConnection : IDbConnection, new()
+    public abstract class AbstractDb<TConnection, TCommand> : IDb
+        where TConnection : class, IDbConnection, new()
         where TCommand : IDbCommand, new()
     {
-        public AbstractDb(string connectionString, string tableName)
+        protected AbstractDb(string connectionString, string tableName)
         {
             TableName = tableName;
             ConnectionString = connectionString;
@@ -15,7 +14,7 @@ namespace PostgresClickHouseCRUD.Abstract
 
         private TConnection Connection { get; } = new TConnection();
 
-        public string TableName { get; }
+        protected string TableName { get; }
 
         private string ConnectionString { get; }
 
@@ -58,6 +57,12 @@ namespace PostgresClickHouseCRUD.Abstract
         public void DropTableIfExists()
         {
             using var cmd = new TCommand {CommandText = DropTableQuery(), Connection = Connection};
+            cmd.ExecuteNonQuery();
+        }
+
+        public void Select1()
+        {
+            using var cmd = new TCommand {CommandText = "SELECT 1", Connection = Connection};
             cmd.ExecuteNonQuery();
         }
 

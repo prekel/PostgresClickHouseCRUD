@@ -10,27 +10,35 @@ using PostgresClickHouseCRUD.Postgres;
 
 namespace PostgresClickHouseCRUD.Benchmark
 {
-    [SimpleJob(RunStrategy.ColdStart, 2, 0, 1)]
+    [SimpleJob(RunStrategy.ColdStart, 1, 0, 1)]
     public class CRUDBenchmark
     {
         [ParamsSource(nameof(ValuesForDb))]
         public IDb Db;
 
-        [Params(1, 2, 3, 4, 5, 10, 100, 1000)]
+        [Params(1, 10, 100)]
         public int N;
 
         public IEnumerable<IDb> ValuesForDb => new List<IDb>
         {
             new PostgresDb("Host=localhost;Username=postgres;Password=qwerty;Database=postgres;Port=15432",
-                "BenchmarkDb"),
-            new ClickHouseDb("Host=127.0.0.1;Port=9000;User=default", "BenchmarkDb")
+                "CRUDBenchmark"),
+            new ClickHouseDb("Host=127.0.0.1;Port=9000;User=default", "CRUDBenchmark")
         };
 
         [GlobalSetup]
-        public void ConnectCreateTable()
+        public void Connect()
         {
             Db.Connect();
             Console.WriteLine("Connected");
+        }
+
+        [Benchmark]
+        public void Select1() => Db.Select1();
+        
+        [Benchmark]
+        public void CreateTable()
+        {
             Db.DropTableIfExists();
             Db.CreateTable();
         }
@@ -71,11 +79,24 @@ namespace PostgresClickHouseCRUD.Benchmark
             }
         }
 
-        [GlobalCleanup]
-        public void DropTableDisconnect()
+        [Benchmark]
+        public void DropTable()
         {
             Db.DropTableIfExists();
-            Db.Dispose();
+        }
+
+        [GlobalCleanup]
+        public void Disconnect()
+        {
+            try
+            {
+                Db.Dispose();
+                Console.WriteLine("Disconnected");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
     }
 }
