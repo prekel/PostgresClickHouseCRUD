@@ -32,28 +32,42 @@ namespace PostgresClickHouseCRUD.Benchmark
             using var chAdo = new ClickHouseAdoDb("Host=127.0.0.1;Port=9000;User=default", "CRUDBenchmark");
             using var chClient = new ClickHouseClientDb("Host=127.0.0.1;Port=8123;User=default", "CRUDBenchmark");
             using var chOctonica =
-                new ClickHouseOctonicaClientDb("Host=127.0.0.1;Port=8123;User=default", "CRUDBenchmark");
+                new ClickHouseOctonicaClientDb("Host=127.0.0.1;Port=9000;User=default", "CRUDBenchmark");
 
-            var dblist = new List<IDb> {npgsql, dotConnect, chAdo, chClient, chOctonica};
+            var dblist = new List<IDb> {npgsql, dotConnect, chAdo, chOctonica};
             foreach (var i in dblist)
             {
                 i.Connect();
+                i.Disconnect();
             }
 
             var r = new Random();
             var benchlist = GetBenchmarks(dblist, 50, new List<int> {100})
                 .Concat(GetBenchmarks(dblist, 10, new List<int> {1000}))
                 .Concat(GetBenchmarks(dblist, 3, new List<int> {5000}))
+                .Concat(GetBenchmarks(dblist, 10, new List<int> {1000}))
+                .Concat(GetBenchmarks(dblist, 3, new List<int> {5000}))
+                .Concat(GetBenchmarks(dblist, 500, new List<int> {100}))
                 .OrderBy(o => r.Next());
 
-            //benchlist = GetBenchmarks(dblist, 10, new List<int> {1})
+            //benchlist = GetBenchmarks(dblist, 10, new List<int> {2})
             //    .OrderBy(o => r.Next());
 
-            var results = benchlist.Select(b => b.Run()).ToList();
+            //var results = benchlist.Select(b => b.Run());
 
-            using var writer = new StreamWriter($"{DateTime.Now:yyyy-MM-dd HH-mm-ss-ffff}.csv");
+            //using var stream = File.Open($"{DateTime.Now:yyyy-MM-dd HH-mm-ss-ffff}.csv", FileMode.Append);
+            using var stream = File.Open("file12311.csv", FileMode.Append);
+            using var writer = new StreamWriter(stream);
             using var csv = new CsvWriter(writer, CultureInfo.GetCultureInfo("ru-ru"));
-            csv.WriteRecords((IEnumerable) results);
+
+            csv.Configuration.HasHeaderRecord = false;
+
+            foreach (var b in benchlist)
+            {
+                var result = b.Run();
+                csv.WriteRecords(new List<CRUDBenchmark.RunResult> {result});
+                //break;
+            }
         }
     }
 }

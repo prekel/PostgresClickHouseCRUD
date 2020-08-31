@@ -20,13 +20,38 @@ namespace PostgresClickHouseCRUD.Benchmark
 
         public RunResult Run()
         {
+            var er = 0;
             var r = new RunResult(this);
-            CreateTable();
-            r.Create = Create().TotalMilliseconds;
-            r.Read = Read().TotalMilliseconds;
-            r.Update = Update().TotalMilliseconds;
-            r.Delete = Delete().TotalMilliseconds;
-            DropTable();
+            while (true)
+            {
+                try
+                {
+                    var guid = Guid.NewGuid();
+                    Console.WriteLine($"{DateTime.Now} Started {Db} {RecordCount} {guid} {er}");
+                    Db.TableName = $"CRUDBenchmark_{guid.ToString().Replace("-", "_")}";
+                    
+                    Db.Connect();
+                    CreateTable();
+                    r.Create = Create().TotalMilliseconds;
+                    r.Read = Read().TotalMilliseconds;
+                    r.Update = Update().TotalMilliseconds;
+                    r.Delete = Delete().TotalMilliseconds;
+                    DropTable();
+                    Db.Disconnect();
+                    
+                    break;
+                }
+                catch (Exception e)
+                {
+                    Console.Error.WriteLine(e);
+                    Console.Error.WriteLine(e.StackTrace);
+                    if (er++ > 5)
+                    {
+                        break;
+                        //throw;
+                    }
+                 }
+            }
 
             Console.WriteLine($"{DateTime.Now} {JsonSerializer.Serialize(r)}");
 

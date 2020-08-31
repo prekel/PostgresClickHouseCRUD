@@ -1,4 +1,4 @@
-using ClickHouse.Client.ADO;
+using Octonica.ClickHouseClient;
 
 using PostgresClickHouseCRUD.Abstract;
 
@@ -12,7 +12,7 @@ namespace PostgresClickHouseCRUD.ClickHouse
             Connection = new ClickHouseConnection(connectionString);
         }
 
-        protected string TableName { get; }
+        public string TableName { get; set; }
 
         protected ClickHouseConnection Connection { get; }
 
@@ -24,6 +24,11 @@ namespace PostgresClickHouseCRUD.ClickHouse
         public void Connect()
         {
             Connection.Open();
+        }
+
+        public void Disconnect()
+        {
+            Connection.Close();
         }
 
         public void CreateTable()

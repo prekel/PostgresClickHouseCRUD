@@ -9,21 +9,23 @@ namespace PostgresClickHouseCRUD.Abstract
         protected AbstractDb(string connectionString, string tableName)
         {
             TableName = tableName;
-            ConnectionString = connectionString;
+            Connection.ConnectionString = connectionString;
         }
 
         private TConnection Connection { get; } = new TConnection();
 
-        protected string TableName { get; }
-
-        private string ConnectionString { get; }
+        public string TableName { get; set; }
 
         public void Connect()
         {
-            Connection.ConnectionString = ConnectionString;
             Connection.Open();
         }
 
+        public void Disconnect()
+        {
+            Connection.Close();
+        }
+        
         public void CreateTable()
         {
             using var cmd = new TCommand {CommandText = CreateTableQuery(), Connection = Connection};
