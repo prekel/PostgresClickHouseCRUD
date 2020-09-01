@@ -25,7 +25,7 @@ namespace PostgresClickHouseCRUD.Abstract
         {
             Connection.Close();
         }
-        
+
         public void CreateTable()
         {
             using var cmd = new TCommand {CommandText = CreateTableQuery(), Connection = Connection};

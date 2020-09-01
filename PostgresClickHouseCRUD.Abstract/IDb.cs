@@ -5,7 +5,7 @@ namespace PostgresClickHouseCRUD.Abstract
     public interface IDb : IDisposable
     {
         public string TableName { get; set; }
-        
+
         public void Connect();
 
         public void Disconnect();

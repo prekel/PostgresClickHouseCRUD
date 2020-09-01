@@ -29,7 +29,7 @@ namespace PostgresClickHouseCRUD.Benchmark
                     var guid = Guid.NewGuid();
                     Console.WriteLine($"{DateTime.Now} Started {Db} {RecordCount} {guid} {er}");
                     Db.TableName = $"CRUDBenchmark_{guid.ToString().Replace("-", "_")}";
-                    
+
                     Db.Connect();
                     CreateTable();
                     r.Create = Create().TotalMilliseconds;
@@ -38,7 +38,7 @@ namespace PostgresClickHouseCRUD.Benchmark
                     r.Delete = Delete().TotalMilliseconds;
                     DropTable();
                     Db.Disconnect();
-                    
+
                     break;
                 }
                 catch (Exception e)
@@ -50,7 +50,7 @@ namespace PostgresClickHouseCRUD.Benchmark
                         break;
                         //throw;
                     }
-                 }
+                }
             }
 
             Console.WriteLine($"{DateTime.Now} {JsonSerializer.Serialize(r)}");

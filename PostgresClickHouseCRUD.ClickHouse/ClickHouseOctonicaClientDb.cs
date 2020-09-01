@@ -12,9 +12,9 @@ namespace PostgresClickHouseCRUD.ClickHouse
             Connection = new ClickHouseConnection(connectionString);
         }
 
-        public string TableName { get; set; }
-
         protected ClickHouseConnection Connection { get; }
+
+        public string TableName { get; set; }
 
         public void Dispose()
         {

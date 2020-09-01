@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -50,13 +49,7 @@ namespace PostgresClickHouseCRUD.Benchmark
                 .Concat(GetBenchmarks(dblist, 500, new List<int> {100}))
                 .OrderBy(o => r.Next());
 
-            //benchlist = GetBenchmarks(dblist, 10, new List<int> {2})
-            //    .OrderBy(o => r.Next());
-
-            //var results = benchlist.Select(b => b.Run());
-
-            //using var stream = File.Open($"{DateTime.Now:yyyy-MM-dd HH-mm-ss-ffff}.csv", FileMode.Append);
-            using var stream = File.Open("file12311.csv", FileMode.Append);
+            using var stream = File.Open($"{DateTime.Now:yyyy-MM-dd HH-mm-ss-ffff}.csv", FileMode.Append);
             using var writer = new StreamWriter(stream);
             using var csv = new CsvWriter(writer, CultureInfo.GetCultureInfo("ru-ru"));
 
@@ -66,7 +59,6 @@ namespace PostgresClickHouseCRUD.Benchmark
             {
                 var result = b.Run();
                 csv.WriteRecords(new List<CRUDBenchmark.RunResult> {result});
-                //break;
             }
         }
     }
